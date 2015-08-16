@@ -463,16 +463,23 @@ module Crystal
         case args.length
         when 1
           arg = args.first
-          unless arg.is_a?(NumberLiteral)
-            arg.raise "argument to [] must be a number, not #{arg.class_desc}:\n\n#{arg}"
-          end
-
-          index = arg.to_number.to_i
-          value = elements[index]?
-          if value
-            value
+          case arg
+          when NumberLiteral
+            index = arg.to_number.to_i
+            value = elements[index]?
+            if value
+              value
+            else
+              NilLiteral.new
+            end
+          when RangeLiteral
+            ArrayLiteral.new(
+              elements[
+                Range.new ((arg.from as NumberLiteral).to_number.to_i),
+                          ((arg.to as NumberLiteral).to_number.to_i)
+              ])
           else
-            NilLiteral.new
+            arg.raise "argument to [] must be a number, not #{arg.class_desc}:\n\n#{arg}"
           end
         else
           raise "wrong number of arguments for [] (#{args.length} for 1)"

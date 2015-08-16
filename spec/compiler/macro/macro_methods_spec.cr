@@ -363,7 +363,10 @@ describe "macro methods" do
     end
 
     it "executes index 1" do
-      assert_macro "", %({{[1, 2, 3][1]}}), [] of ASTNode, "2"
+      assert_macro "", %({{[1, 2, 3][1, 2]}}), [] of ASTNode, "[2, 3]"
+    end
+
+    it "executes index range" do
     end
 
     it "executes index out of bounds" do
